@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+
 public class Actor {
     private String name;
     private int age;
@@ -14,7 +16,8 @@ public class Actor {
     }
 
     public int getAge() {
-        return age;
+        LocalDate ano = LocalDate.now();
+        return ano.getYear() - age;
     }
 
     public void setName(String name) {
