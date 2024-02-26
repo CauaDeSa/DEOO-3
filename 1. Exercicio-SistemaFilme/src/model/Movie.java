@@ -13,7 +13,7 @@ public class Movie {
     public Movie(String title, Director director, int yearOfRelease, int mark) {
         this.title = title;
         this.director = director;
-        this.elenco = new ArrayList<Actor>();
+        this.elenco = new ArrayList<>();
         this.yearOfRelease = yearOfRelease;
         this.mark = mark;
     }
@@ -21,7 +21,7 @@ public class Movie {
     public Movie(String title, Director director, int yearOfRelease, int mark, Actor ...actor) {
         this.title = title;
         this.director = director;
-        this.elenco = new ArrayList<Actor>();
+        this.elenco = new ArrayList<>();
         this.elenco.addAll(Arrays.asList(actor));
         this.yearOfRelease = yearOfRelease;
         this.mark = mark;
@@ -35,7 +35,7 @@ public class Movie {
         return director;
     }
 
-    public ArrayList<Actor> getElenco() {
+    public ArrayList<Actor> getActors() {
         return elenco;
     }
 
@@ -75,18 +75,19 @@ public class Movie {
         this.elenco.remove(actor);
     }
 
+    @Override
     public String toString() {
-        String msg = "Movie: " + title + "\nDirector: " + director.getName() +
-                "\nYear of release: " + yearOfRelease + "\nMark: " + mark;
+        StringBuilder msg = new StringBuilder("Movie: " + title + "\nDirector: " + director.getName() +
+                "\nYear of release: " + yearOfRelease + "\nMark: " + mark);
 
         if(elenco != null){
-            msg += "\nElenco: ";
+            msg.append("\nElenco: ");
             for (Actor actor : elenco){
-                msg += "\n" + actor.getName() + " (" + actor.getAge() + ")";
+                msg.append("\n").append(actor.getName()).append(" (").append(actor.getAge()).append(")");
             }
         }
 
-        return msg;
+        return msg.toString();
     }
 
 }
