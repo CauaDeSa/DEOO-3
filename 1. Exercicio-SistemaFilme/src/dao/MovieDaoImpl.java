@@ -6,7 +6,7 @@ import model.Movie;
 import model.Actor;
 public class MovieDaoImpl {
     private static MovieDaoImpl instance;
-    private List<Movie> dataset;
+    private final List<Movie> dataset;
 
     private MovieDaoImpl(){
         dataset = new ArrayList<>();
@@ -25,7 +25,7 @@ public class MovieDaoImpl {
 
     public Movie getMovieByName(String name){
         Movie movie = null;
-        if (dataset != null) {
+        if (!dataset.isEmpty()) {
             for (int i = 0; i < dataset.size() && movie == null; i++) {
                 if (dataset.get(i).getTitle().equals(name)) {
                     movie = dataset.get(i);
@@ -49,7 +49,7 @@ public class MovieDaoImpl {
         ActorDao actorInstance = ActorDaoImpl.getInstance();
         Actor actor = actorInstance.getActorByName(actorName);
         for(Movie movie : dataset){
-            if (movie.getElenco().contains(actor)){
+            if (movie.getActors().contains(actor)){
                 movies.add(movie);
             }
         }
@@ -64,10 +64,6 @@ public class MovieDaoImpl {
             }
         }
         return movies;
-    }
-
-    public boolean isNull(){
-        return dataset == null;
     }
 
     public boolean insertMovie(Movie movie){
