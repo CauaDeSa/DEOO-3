@@ -1,23 +1,21 @@
 package view;
 
-import dao.ActorDaoImpl;
-import dao.DirectorDaoImpl;
-import dao.MovieDaoImpl;
+import controller.ActorController;
+import controller.DirectorController;
+import controller.MovieController;
 import model.Actor;
 import model.Director;
 import model.Movie;
 
-import java.util.Locale;
-
 public class Console {
-    private static ActorDaoImpl actorDataset;
-    private static DirectorDaoImpl directorDataset;
-    private static MovieDaoImpl movieDataset;
+    private static MovieController movieController;
+    private static ActorController actorController;
+    private static DirectorController directorController;
 
     public Console(){
-        actorDataset = ActorDaoImpl.getInstance();
-        directorDataset = DirectorDaoImpl.getInstance();
-        movieDataset = MovieDaoImpl.getInstance();
+         movieController = new MovieController();
+         actorController = new ActorController();
+         directorController = new DirectorController();
     }
 
     public static void system(){
@@ -29,11 +27,7 @@ public class Console {
             switch(option){
                 case CADASTRO_FILME:
                         Movie movieData = Utils.readFilmData();
-                        if (movieDataset.insertMovie(movieData)){
-                            for (Actor actor : movieData.getElenco()) {
-                                actorDataset.insertActor(actor);
-                            }
-                            directorDataset.insertDirector(movieData.getDirector());
+                        if (movieController.addMovie(movieData)){
                             System.out.println("Êxito ao adicionar o filme!");
                         } else {
                             System.out.println("Falha ao adicionar o filme.");
@@ -41,11 +35,10 @@ public class Console {
                     break;
 
                 case LISTAR_FILMES:
-                        if(!movieDataset.isNull()) {
-                            System.out.println("\nFILMES: \n");
-                            for (Movie movie : movieDataset.getAllMovies()) {
+                        if(!movieController.isNull()) {
+                            System.out.println("\nFILMES CADASTRADOS:\n");
+                            for (Movie movie : movieController.getAllMovies()) {
                                 System.out.println(movie.toString());
-                                System.out.println();
                             }
                         } else {
                             System.out.println("Não há filmes a serem " +
@@ -55,11 +48,12 @@ public class Console {
                     break;
 
                 case LISTAR_DIRETORES:
-                    if(!directorDataset.isNull()) {
-                        System.out.println("\nDIRETORES: \n");
-                        for (Director director : directorDataset.getAllDirectors()) {
-                            System.out.println(director.getName());
-                        }
+                    if(!directorController.isNull()) {
+                        System.out.println("\nDIRETORES CADASTRADOS:\n");
+                            for (Director director :
+                                 directorController.getAllDirectors()) {
+                                System.out.println(director);
+                            }
                     } else {
                         System.out.println("Não há diretores a serem " +
                                 "listados.");
@@ -67,11 +61,12 @@ public class Console {
                     break;
 
                 case LISTAR_ATORES:
-                    if (!actorDataset.isNull()) {
-                        System.out.println("\nATORES: \n");
-                        for(Actor actor : actorDataset.getAllActors()){
+                    if (!actorController.isNull()) {
+                        System.out.println("\nATORES CADASTRADOS:\n");
+                        for (Actor actor : actorController.getAllActors()){
                             System.out.println(actor.getName() + " (" + actor.getAge() + ")");
                         }
+
                     } else {
                         System.out.println("Não há atores a serem " +
                                 "listados.");
@@ -80,13 +75,12 @@ public class Console {
 
                 case FILMES_POR_DIRETOR:
                     String director = Utils.getName("diretor");
-                    if (!movieDataset.getMoviesByDirector(director).isEmpty()) {
-                        System.out.println("FILMES DO DIRETOR " + director.toUpperCase() + ":\n");
-                        for (Movie movie :
-                                movieDataset.getMoviesByDirector(director)) {
-                            System.out.println(movie.toString());
-                            System.out.println();
-                        }
+                    if (!movieController.getMoviesByDirector(director).isEmpty()) {
+                        System.out.println("\nFILMES DO DIRETOR " + director.toUpperCase() + ": \n");
+
+                            for (Movie movie : movieController.getMoviesByDirector(director)){
+                                System.out.println(movie);
+                            }
                     } else {
                         System.out.println("Esse diretor não possui filmes " +
                                 "cadastrados.");
@@ -95,12 +89,11 @@ public class Console {
 
                 case FILMES_POR_ATOR:
                     String actor = Utils.getName("ator");
-                    if(!movieDataset.getMoviesByActor(actor).isEmpty()) {
+                    if(!movieController.getMoviesByActor(actor).isEmpty()) {
                         System.out.println("\nFILMES DO ATOR " + actor.toUpperCase() + ":\n");
                         for (Movie movie :
-                                movieDataset.getMoviesByActor(actor)) {
+                                movieController.getMoviesByActor(actor)) {
                             System.out.println(movie.toString());
-                            System.out.println();
                         }
                     } else {
                         System.out.println("Esse ator não possui filmes " +
@@ -110,12 +103,11 @@ public class Console {
 
                 case FILMES_POR_NOTA:
                     int mark = Utils.getMark();
-                    if (!movieDataset.getMoviesByMark(mark).isEmpty()) {
+                    if (!movieController.getMoviesByMark(mark).isEmpty()) {
                         System.out.println("\nFILMES COM NOTA " + mark + ":\n");
                         for (Movie movie :
-                                movieDataset.getMoviesByMark(mark)) {
+                                movieController.getMoviesByMark(mark)) {
                             System.out.println(movie.toString());
-                            System.out.println();
                         }
                     } else {
                         System.out.println("Não há filmes cadastrados com " +
@@ -125,5 +117,7 @@ public class Console {
             }
 
         }while(option != MenuOptions.SAIR);
+
+        System.out.println("Saindo...");
     }
 }
